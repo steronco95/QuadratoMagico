@@ -9,6 +9,69 @@ public class RisolviQuadrato {
 	private int magica ; // costante magica
 	
 	
+	private List<List<Integer>> soluzioni ;
+	
+	public RisolviQuadrato(int N) {
+		this.N = N;
+		this.N2 = N*N;
+		this.magica = N*(N2+1)/2;
+	}
+	/**
+	 * restituisce tutti i quadrati magici!
+	 */
+	public List<List<Integer>> quadrati() {
+		List <Integer> parziale = new ArrayList<>();
+		int livello = 0 ;
+		
+		this.soluzioni = new ArrayList<>();
+		
+		cerca(parziale,livello);
+		
+		return this.soluzioni;
+		
+	}
+	
+	/**
+	 * procedura ricorsiva per cercare tutti i vari quadrati!
+	 * @param parziale soluzione parziale in cui inserisco i vari numeri
+	 * @param livello livello della procedura ricorsiva
+	 */
+	
+	private void cerca(List<Integer> parziale, int livello) {
+		
+		if(livello == N2) {
+			//caso terminale
+			
+			
+			if(controlla(parziale)) {
+				//è magico!!
+//				System.out.println(parziale);
+				this.soluzioni.add(new ArrayList<>(parziale));
+			}
+			return;
+		}
+			//caso intermedio
+	
+			//metto dei controlli intermedi per verificare se ogni riga è giusta! altrimenti scarto e vado avanti!
+			//li faccio quando il livello è multiplo di N
+			
+			if(livello%N == 0 && livello !=0) {
+				if(!controllaRiga(parziale, livello/N-1)) {
+					return;//potatura dell'albero di ricerca poichè 
+				}
+			}
+			
+			for(int valore = 1; valore <= N2; valore++) {
+				if(!parziale.contains(valore)) {
+					parziale.add(valore);
+					cerca(parziale, livello+1);
+					parziale.remove(parziale.size()-1);
+				}
+			}
+			
+		}
+	
+	
 	/**
 	 * Verifica se una soluzione rispetta tutte le somme
 	 * @param parziale
@@ -56,4 +119,14 @@ public class RisolviQuadrato {
 
 		return true ;
 	}
+	
+	private boolean controllaRiga(List<Integer> parziale, int riga) {
+		
+		int somma = 0;
+		
+		for(int col =0; col<N; col++) 		
+		   somma += parziale.get(riga*N+col);		
+		return(somma == magica);
+	}
+	
 }
